@@ -74,6 +74,19 @@ body{
 	height: 10px;
 }
 
+#promocao{
+	margin: auto;
+	background-color: azure;
+	border: 2px solid black;
+	width: 40%;
+	height: 20%;
+
+}
+
+#promocao input{
+	margin: 40px;
+}
+
 
 
 
