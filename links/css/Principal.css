@@ -18,34 +18,80 @@ body{
 *******************************************************/
 
 .casaBranca{
-	background-color: rgb(255, 255, 255);
+	background-color: rgb(207, 207, 207);
 	color: blueviolet;
 }
 
 .casaPreta{
-	background-color: rgb(146, 146, 146);
+	background-color: rgb(100, 100, 100);
 	color: blueviolet;
 }
 
 .caminho{
-	width: 100%;
-	height: 100%;
-	background-color: rgba(128, 236, 255, 0.2);
+	width: 55px;
+	height: 55px;
+	background-color: rgba(128, 236, 255, 0.699);
+	border: none;
 }
 
 .semCaminho{
-	width: 100%;
-	height: 100%;
+	width: 90%;
+	height: 90%;
 	background-color: rgba(128, 236, 255, 0);
+	border: none;
 }
 
 .pecaInimiga{
-	width: 100%;
-	height: 100%;
-	background-color: rgba(255, 185, 128, 0.2);
+	width: 55px;
+	height: 55px;
+	background-color: rgba(255, 137, 41, 0.808);
+}
+
+.tabuleiro{
+    width: 740px;
+	height: 740px;
+	border: 2px solid black;
+	margin: auto;
+}
+
+.peca{
+	width: 55px;
+	height: 55px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.promocaoBranco{
+	width: 100px;
+	height: 100px;
+	margin: auto;
+	padding: 20px;
+}
+
+.promocaoPreto{
+	width: 100px;
+	height: 100px;
+	margin: auto;
+	padding: 40px;
+   	transform:  rotate(180deg);
 }
 
 
+/*
+
+
+
+
+quadrado
+.tabuleiro{
+    width: 740px;
+	height: 740px;
+	border: 2px solid black;
+	margin: auto;
+}
+
+
+tabela
 .tabuleiro{
     width: 1600px;
 	height: 200px;
@@ -57,7 +103,7 @@ body{
 	height: 100%;
 	margin: auto;
 }
-
+*/
 /******************************************************
 
 		IDS
@@ -71,14 +117,15 @@ body{
 
 #tabuleiro th{
 	width: 60px;
-	height: 10px;
+	height: 60px;
 }
+
 
 #promocao{
 	display: none;
 	left: 20%;
 	top: 15%;
-	width: 450px;
+	width: 800px;
 	height: 400px;
 	position: fixed;
 	background-color: white;
