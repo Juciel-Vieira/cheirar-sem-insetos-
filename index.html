@@ -48,17 +48,33 @@
 		});
 
 		var PecasJogando = [];
-
 		var jogada = 1;
-
 		var roqueTorreBranco1 = true;
 		var roqueTorreBranco2 = true;
 		var roqueReiBranco = true;
 		var roqueTorrePreto1 = true;
 		var roqueTorrePreto2 = true;
 		var roqueReiPreto = true;
+		var validaCaminho = 0;
+		var caminhoInimigo = [];
 
 
+		//const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+		function ValidaCaminhosInimigos(time) {
+
+			caminhoInimigo = [];
+
+			for (const property in PecasJogando) {
+
+				if (!PecasJogando[property].nome.toLowerCase().includes(`${time}`)) {
+					CaminhoPeca(PecasJogando[property].nome, PecasJogando[property].posicao)
+					//console.log(PecasJogando[property].nome)
+
+				}
+
+			}
+			meuTime = time;
+		};
 
 
 		function DesenhaTabuleiro() {
@@ -117,10 +133,10 @@
 			PecasJogando.push(CavaloBranco1 = new Peca('CavaloBranco1', 58));
 			PecasJogando.push(BispoBranco1 = new Peca('BispoBranco1', 59));
 			PecasJogando.push(RainhaBranco = new Peca('RainhaBranco', 60));
-			PecasJogando.push(ReiBranco = new Peca('ReiBranco', 61));
 			PecasJogando.push(BispoBranco2 = new Peca('BispoBranco2', 62));
 			PecasJogando.push(CavaloBranco2 = new Peca('CavaloBranco2', 63));
 			PecasJogando.push(TorreBranco2 = new Peca('TorreBranco2', 64));
+			PecasJogando.push(ReiBranco = new Peca('ReiBranco', 61));
 
 			//Peças Pretas
 			PecasJogando.push(PeaoPreto1 = new Peca('PeaoPreto1', 9));
@@ -135,10 +151,11 @@
 			PecasJogando.push(CavaloPreto1 = new Peca('CavaloPreto1', 2));
 			PecasJogando.push(BispoPreto1 = new Peca('BispoPreto1', 3));
 			PecasJogando.push(RainhaPreto = new Peca('RainhaPreto', 4));
-			PecasJogando.push(ReiPreto = new Peca('ReiPreto', 5));
 			PecasJogando.push(BispoPreto2 = new Peca('BispoPreto2', 6));
 			PecasJogando.push(CavaloPreto2 = new Peca('CavaloPreto2', 7));
 			PecasJogando.push(TorrePreto2 = new Peca('TorrePreto2', 8));
+			PecasJogando.push(ReiPreto = new Peca('ReiPreto', 5));
+
 		};
 
 		function DesenhaPecasJogando() {
@@ -154,102 +171,108 @@
 			nomeBusca = nome.toLowerCase();
 			meuTime = '';
 			vez = '';
+			casasLivres = [];
+			casasInimigas = [];
+			casasInimigasNoCaminho = [];
+			casasAmigas = [];
+			casasOcupadas = [];
+
+
 
 			if (nomeBusca.includes("branco")) { meuTime = 'branco'; }
-			else { meuTime = 'preto'; };
+			else if (nomeBusca.includes("preto")) { meuTime = 'preto'; }
 
 			if (jogada % 2 != 0) { vez = 'branco' }
 			else { vez = 'preto' };
 
+
+			//valida as posições das peças no tabuleiro
+			for (const property in PecasJogando) {
+				casaInimiga = `${PecasJogando[property].nome}`;
+				casaInimiga = casaInimiga.toLowerCase();
+				casasOcupadas.push(PecasJogando[property].posicao);
+				if (!casaInimiga.includes(meuTime)) { casasInimigas.push(PecasJogando[property].posicao) }
+				else { casasAmigas.push(PecasJogando[property].posicao) }
+
+			};
+
 			if (nomeBusca.includes("peaobranco")) {
 
+
+
+				//valida movimento
+				for (c = posicao; c > 0; c--) {
+					if (c >= 32) {
+						if (c == (posicao - 8) || c == (posicao - 16)) {
+
+							if (casasAmigas.indexOf(c) >= 0) {
+								if (posicao != c) {
+									break;
+								}
+							}
+							else if (casasInimigas.indexOf(c) >= 0) {
+								break;
+							}
+							casasLivres.push(`${c}`);
+						}
+					}
+					else {
+						if (c == (posicao - 8)) {
+
+							if (casasAmigas.indexOf(c) >= 0) {
+								if (posicao != c) {
+									break;
+								}
+							}
+							else if (casasInimigas.indexOf(c) >= 0) {
+								break;
+							}
+							casasLivres.push(`${c}`);
+						}
+
+					}
+				}
+
+				//valida captura
+
+				for (c = posicao; c > 0; c--) {
+
+					//primeira coluna
+					if (posicao == 1 || posicao == 9 || posicao == 17 || posicao == 25 || posicao == 33 || posicao == 41 || posicao == 49 || posicao == 57) {
+						if (c == (posicao - 7)) {
+
+							if (casasInimigas.indexOf(c) >= 0) {
+								casasInimigasNoCaminho.push(`${c}`);
+							}
+						}
+
+					}
+
+					//ultima coluna
+					else if (posicao == 8 || posicao == 16 || posicao == 24 || posicao == 32 || posicao == 40 || posicao == 48 || posicao == 56 || posicao == 64) {
+						if (c == (posicao - 9)) {
+
+							if (casasInimigas.indexOf(c) >= 0) {
+								casasInimigasNoCaminho.push(`${c}`);
+							}
+						}
+
+					}
+
+					//geral
+					else {
+						if (c == (posicao - 7) || c == (posicao - 9)) {
+
+							if (casasInimigas.indexOf(c) >= 0) {
+								casasInimigasNoCaminho.push(`${c}`);
+							}
+						}
+					}
+
+				}
+
+				//desenha casas livres
 				if (vez == meuTime) {
-
-					var primeiroMovimento = [];
-					var casasLivres = [];
-					var casasInimigas = [];
-					var casasInimigasNoCaminho = [];
-					var casasAmigas = [];
-
-					for (const property in PecasJogando) {
-						casaInimiga = `${PecasJogando[property].nome}`;
-						casaInimiga = casaInimiga.toLowerCase();
-						if (!casaInimiga.includes(meuTime)) { casasInimigas.push(PecasJogando[property].posicao) }
-						else { casasAmigas.push(PecasJogando[property].posicao) }
-					};
-
-					//valida movimento
-					for (c = posicao; c > 0; c--) {
-						if (c >= 32) {
-							if (c == (posicao - 8) || c == (posicao - 16)) {
-
-								if (casasAmigas.indexOf(c) >= 0) {
-									if (posicao != c) {
-										break;
-									}
-								}
-								else if (casasInimigas.indexOf(c) >= 0) {
-									break;
-								}
-								casasLivres.push(`${c}`);
-							}
-						}
-						else {
-							if (c == (posicao - 8)) {
-
-								if (casasAmigas.indexOf(c) >= 0) {
-									if (posicao != c) {
-										break;
-									}
-								}
-								else if (casasInimigas.indexOf(c) >= 0) {
-									break;
-								}
-								casasLivres.push(`${c}`);
-							}
-
-						}
-					}
-
-					//valida captura
-
-					for (c = posicao; c > 0; c--) {
-
-						//primeira coluna
-						if (posicao == 1 || posicao == 9 || posicao == 17 || posicao == 25 || posicao == 33 || posicao == 41 || posicao == 49 || posicao == 57) {
-							if (c == (posicao - 7)) {
-
-								if (casasInimigas.indexOf(c) >= 0) {
-									casasInimigasNoCaminho.push(`${c}`);
-								}
-							}
-
-						}
-
-						//ultima coluna
-						else if (posicao == 8 || posicao == 16 || posicao == 24 || posicao == 32 || posicao == 40 || posicao == 48 || posicao == 56 || posicao == 64) {
-							if (c == (posicao - 9)) {
-
-								if (casasInimigas.indexOf(c) >= 0) {
-									casasInimigasNoCaminho.push(`${c}`);
-								}
-							}
-
-						}
-
-						//geral
-						else {
-							if (c == (posicao - 7) || c == (posicao - 9)) {
-
-								if (casasInimigas.indexOf(c) >= 0) {
-									casasInimigasNoCaminho.push(`${c}`);
-								}
-							}
-						}
-
-					}
-
-					//desenha casas livres
 					for (c = 64; c > 0; c--) {
 						if (casasLivres.includes(`${c}`)) {
 							if (c <= 8) {
@@ -269,28 +292,14 @@
 							}
 						}
 					}
-
-
 				}
+
 
 			}
 
 			if (nomeBusca.includes("peaopreto")) {
 
 				if (vez == meuTime) {
-
-					var primeiroMovimento = [];
-					var casasLivres = [];
-					var casasInimigas = [];
-					var casasInimigasNoCaminho = [];
-					var casasAmigas = [];
-
-					for (const property in PecasJogando) {
-						casaInimiga = `${PecasJogando[property].nome}`;
-						casaInimiga = casaInimiga.toLowerCase();
-						if (!casaInimiga.includes(meuTime)) { casasInimigas.push(PecasJogando[property].posicao) }
-						else { casasAmigas.push(PecasJogando[property].posicao) }
-					};
 
 					//valida movimento
 					for (c = posicao; c <= 64; c++) {
@@ -393,21 +402,23 @@
 
 			if (nomeBusca.includes("rei")) {
 
+
+
 				if (vez == meuTime) {
-					var casasLivres = [];
-					var casasInimigas = [];
-					var casasInimigasNoCaminho = [];
-					var casasAmigas = [];
-					var casasOcupadas = [];
 
-					for (const property in PecasJogando) {
-						casaInimiga = `${PecasJogando[property].nome}`;
-						casaInimiga = casaInimiga.toLowerCase();
-						casasOcupadas.push(PecasJogando[property].posicao);
-						if (!casaInimiga.includes(meuTime)) { casasInimigas.push(PecasJogando[property].posicao) }
-						else { casasAmigas.push(PecasJogando[property].posicao) }
-					};
+					ValidaCaminhosInimigos(meuTime);
 
+					function ValidaCasas() {
+						if (casasInimigas.indexOf(c) >= 0) {
+							casasInimigasNoCaminho.push(`${c}`);
+						}
+						else if (caminhoInimigo.indexOf(c) >= 0) {
+
+						}
+						else if (casasAmigas.indexOf(c) < 0) {
+							casasLivres.push(`${c}`);
+						}
+					}
 
 					for (c = 64; c > 0; c--) {
 
@@ -415,40 +426,20 @@
 						if (posicao == 1 || posicao == 9 || posicao == 17 || posicao == 25 || posicao == 33 || posicao == 41 || posicao == 49 || posicao == 57) {
 
 							if (c == (posicao - 8) || c == (posicao - 7)) {
-								if (casasInimigas.indexOf(c) >= 0) {
-									casasInimigasNoCaminho.push(`${c}`);
-								}
-								else if (casasAmigas.indexOf(c) < 0) {
-									casasLivres.push(`${c}`);
-								}
+								ValidaCasas()
 							}
 							else if (c == (posicao + 8) || c == (posicao + 1) || c == (posicao + 9)) {
-								if (casasInimigas.indexOf(c) >= 0) {
-									casasInimigasNoCaminho.push(`${c}`);
-								}
-								else if (casasAmigas.indexOf(c) < 0) {
-									casasLivres.push(`${c}`);
-								}
+								ValidaCasas()
 							}
 						}
 
 						//ultima coluna
 						else if (posicao == 8 || posicao == 16 || posicao == 24 || posicao == 32 || posicao == 40 || posicao == 48 || posicao == 56 || posicao == 64) {
 							if (c == (posicao - 8) || c == (posicao - 1) || c == (posicao - 9)) {
-								if (casasInimigas.indexOf(c) >= 0) {
-									casasInimigasNoCaminho.push(`${c}`);
-								}
-								else if (casasAmigas.indexOf(c) < 0) {
-									casasLivres.push(`${c}`);
-								}
+								ValidaCasas()
 							}
 							else if (c == (posicao + 8) || c == (posicao + 7)) {
-								if (casasInimigas.indexOf(c) >= 0) {
-									casasInimigasNoCaminho.push(`${c}`);
-								}
-								else if (casasAmigas.indexOf(c) < 0) {
-									casasLivres.push(`${c}`);
-								}
+								ValidaCasas()
 							}
 
 
@@ -457,25 +448,13 @@
 						//geral
 						else {
 							if (c == (posicao - 8) || c == (posicao - 1) || c == (posicao - 9) || c == (posicao - 7)) {
-								if (casasInimigas.indexOf(c) >= 0) {
-									casasInimigasNoCaminho.push(`${c}`);
-								}
-								else if (casasAmigas.indexOf(c) < 0) {
-									casasLivres.push(`${c}`);
-								}
+								ValidaCasas()
 							}
 							else if (c == (posicao + 8) || c == (posicao + 1) || c == (posicao + 9) || c == (posicao + 7)) {
-								if (casasInimigas.indexOf(c) >= 0) {
-									casasInimigasNoCaminho.push(`${c}`);
-								}
-								else if (casasAmigas.indexOf(c) < 0) {
-									casasLivres.push(`${c}`);
-								}
+								ValidaCasas()
 							}
 						}
-
 					}
-
 
 					//roque
 
@@ -547,22 +526,7 @@
 
 			if (nomeBusca.includes("bispo")) {
 
-
-
 				var corCasa = document.getElementById(posicao).className;
-				var casasLivres = [];
-				var casasInimigas = [];
-				var casasInimigasNoCaminho = [];
-				var casasAmigas = [];
-
-				for (const property in PecasJogando) {
-					casaInimiga = `${PecasJogando[property].nome}`;
-					casaInimiga = casaInimiga.toLowerCase();
-					if (!casaInimiga.includes(meuTime)) { casasInimigas.push(PecasJogando[property].posicao) }
-					else { casasAmigas.push(PecasJogando[property].posicao) }
-				};
-
-
 
 				//diagonal superior direita
 
@@ -650,11 +614,11 @@
 					}
 
 				}
+
 				else {
 					for (c = 65; c >= 0; c--) {
 						if (casasLivres.includes(`${c}`) && c != posicao) {
-							console.log(`caminho inimigo casa ${c}`);
-
+							caminhoInimigo.push(c);
 						}
 
 					}
@@ -664,19 +628,6 @@
 			if (nomeBusca.includes("cavalo")) {
 
 				if (vez == meuTime) {
-
-					var casasLivres = [];
-					var casasInimigas = [];
-					var casasInimigasNoCaminho = [];
-					var casasAmigas = [];
-
-					for (const property in PecasJogando) {
-						casaInimiga = `${PecasJogando[property].nome}`;
-						casaInimiga = casaInimiga.toLowerCase();
-						if (!casaInimiga.includes(meuTime)) { casasInimigas.push(PecasJogando[property].posicao) }
-						else { casasAmigas.push(PecasJogando[property].posicao) }
-					};
-
 
 					var primeiraColuna = [1, 9, 17, 25, 33, 41, 49, 57];
 					var segundaColuna = [2, 10, 18, 26, 34, 42, 50, 58];
@@ -1522,27 +1473,31 @@
 		function fazRoque(destino) {
 
 			if (destino == 63) {
-				ReiBranco.MovePeca(63);
 				TorreBranco2.MovePeca(62);
+				ReiBranco.MovePeca(63);
 				jogada++;
 			}
 			else if (destino == 7) {
-				ReiPreto.MovePeca(7);
 				TorrePreto2.MovePeca(6);
+				ReiPreto.MovePeca(7);
 				jogada++;
 			}
 			else if (destino == 59) {
-				ReiBranco.MovePeca(59);
 				TorreBranco1.MovePeca(60);
+				ReiBranco.MovePeca(59);
 				jogada++;
 			}
 			else if (destino == 3) {
-				ReiPreto.MovePeca(3);
 				TorrePreto1.MovePeca(4);
+				ReiPreto.MovePeca(3);
 				jogada++;
 			}
 
 		}
+
+
+
+
 
 		class Peca {
 
