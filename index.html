@@ -60,22 +60,6 @@
 
 
 		//const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-		function ValidaCaminhosInimigos(time) {
-
-			caminhoInimigo = [];
-
-			for (const property in PecasJogando) {
-
-				if (!PecasJogando[property].nome.toLowerCase().includes(`${time}`)) {
-					CaminhoPeca(PecasJogando[property].nome, PecasJogando[property].posicao)
-					//console.log(PecasJogando[property].nome)
-
-				}
-
-			}
-			meuTime = time;
-		};
-
 
 		function DesenhaTabuleiro() {
 
@@ -176,9 +160,10 @@
 			casasInimigasNoCaminho = [];
 			casasAmigas = [];
 			casasOcupadas = [];
+			parar = false;
 
 
-
+			//valida de quem é a vez de jogar
 			if (nomeBusca.includes("branco")) { meuTime = 'branco'; }
 			else if (nomeBusca.includes("preto")) { meuTime = 'preto'; }
 
@@ -187,6 +172,7 @@
 
 
 			//valida as posições das peças no tabuleiro
+
 			for (const property in PecasJogando) {
 				casaInimiga = `${PecasJogando[property].nome}`;
 				casaInimiga = casaInimiga.toLowerCase();
@@ -194,53 +180,94 @@
 				if (!casaInimiga.includes(meuTime)) { casasInimigas.push(PecasJogando[property].posicao) }
 				else { casasAmigas.push(PecasJogando[property].posicao) }
 
-			};
+			}
 
+
+
+			//valida casas livres
+			function ValidaCasasGeral() {
+				if (casasAmigas.indexOf(c) >= 0) {
+					if (posicao != c) {
+						parar = true;
+						return parar;
+					}
+				}
+				else if (casasInimigas.indexOf(c) >= 0) {
+					casasInimigasNoCaminho.push(`${c}`);
+					parar = true;
+					return parar;
+				}
+				casasLivres.push(`${c}`);
+			}
+
+			function ValidaCaminhoPeao() {
+
+
+				if (casasAmigas.indexOf(c) >= 0) {
+					if (posicao != c) {
+						parar = true;
+						return parar;
+					}
+				}
+				else if (casasInimigas.indexOf(c) >= 0) {
+					parar = true;
+					return parar;
+				}
+				casasLivres.push(`${c}`);
+			}
+
+
+
+
+			//desenha casas livres 
+			function DesenhaCasasPossiveis() {
+				for (c = 64; c > 0; c--) {
+					if (casasLivres.includes(`${c}`)) {
+						document.getElementById(c).innerHTML = `<input type="button"  onclick="${nome}.MovePeca(${c})" class="caminho" />`;
+					}
+					else if (casasInimigasNoCaminho.includes(`${c}`)) {
+						imgCapturada = '';
+						for (const property in PecasJogando) {
+							if (PecasJogando[property].posicao == c) { imgCapturada = PecasJogando[property].tipoPeca }
+						};
+						document.getElementById(c).innerHTML = `<input  type="image" src="links/img/${imgCapturada}.png" onclick="CapturaPeca(${posicao},${c})" class="pecaInimiga" id="${document.getElementById(c).children[0].id}" value="${document.getElementById(c).children[0].value}" />`;
+					}
+				}
+			}
+
+
+
+
+			//valida os movimentos de cada peça
 			if (nomeBusca.includes("peaobranco")) {
 
 
-
 				//valida movimento
+				parar = false;
 				for (c = posicao; c > 0; c--) {
 					if (c >= 32) {
 						if (c == (posicao - 8) || c == (posicao - 16)) {
-
-							if (casasAmigas.indexOf(c) >= 0) {
-								if (posicao != c) {
-									break;
-								}
-							}
-							else if (casasInimigas.indexOf(c) >= 0) {
-								break;
-							}
-							casasLivres.push(`${c}`);
+							ValidaCaminhoPeao()
+							if (parar) { break }
 						}
 					}
 					else {
 						if (c == (posicao - 8)) {
-
-							if (casasAmigas.indexOf(c) >= 0) {
-								if (posicao != c) {
-									break;
-								}
-							}
-							else if (casasInimigas.indexOf(c) >= 0) {
-								break;
-							}
-							casasLivres.push(`${c}`);
+							ValidaCaminhoPeao()
+							if (parar) { break }
 						}
 
 					}
 				}
 
 				//valida captura
+				parar = false;
 
 				for (c = posicao; c > 0; c--) {
 
 					//primeira coluna
 					if (posicao == 1 || posicao == 9 || posicao == 17 || posicao == 25 || posicao == 33 || posicao == 41 || posicao == 49 || posicao == 57) {
 						if (c == (posicao - 7)) {
-
 							if (casasInimigas.indexOf(c) >= 0) {
 								casasInimigasNoCaminho.push(`${c}`);
 							}
@@ -302,33 +329,18 @@
 				if (vez == meuTime) {
 
 					//valida movimento
+					parar = false;
 					for (c = posicao; c <= 64; c++) {
 						if (c <= 32) {
 							if (c == (posicao + 8) || c == (posicao + 16)) {
-
-								if (casasAmigas.indexOf(c) >= 0) {
-									if (posicao != c) {
-										break;
-									}
-								}
-								else if (casasInimigas.indexOf(c) >= 0) {
-									break;
-								}
-								casasLivres.push(`${c}`);
+								ValidaCaminhoPeao()
+								if (parar) { break }
 							}
 						}
 						else {
 							if (c == (posicao + 8)) {
-
-								if (casasAmigas.indexOf(c) >= 0) {
-									if (posicao != c) {
-										break;
-									}
-								}
-								else if (casasInimigas.indexOf(c) >= 0) {
-									break;
-								}
-								casasLivres.push(`${c}`);
+								ValidaCaminhoPeao()
+								if (parar) { break }
 							}
 
 						}
@@ -369,6 +381,7 @@
 						}
 					}
 					//desenha casas livres
+
 					for (c = 64; c > 0; c--) {
 						if (casasLivres.includes(`${c}`)) {
 							if (c >= 57) {
@@ -401,14 +414,9 @@
 			}
 
 			if (nomeBusca.includes("rei")) {
-
-
-
 				if (vez == meuTime) {
 
-					ValidaCaminhosInimigos(meuTime);
-
-					function ValidaCasas() {
+					function ValidaCasasRei() {
 						if (casasInimigas.indexOf(c) >= 0) {
 							casasInimigasNoCaminho.push(`${c}`);
 						}
@@ -418,7 +426,11 @@
 						else if (casasAmigas.indexOf(c) < 0) {
 							casasLivres.push(`${c}`);
 						}
+
 					}
+
+					ValidaCaminhosInimigos(meuTime);
+
 
 					for (c = 64; c > 0; c--) {
 
@@ -426,20 +438,20 @@
 						if (posicao == 1 || posicao == 9 || posicao == 17 || posicao == 25 || posicao == 33 || posicao == 41 || posicao == 49 || posicao == 57) {
 
 							if (c == (posicao - 8) || c == (posicao - 7)) {
-								ValidaCasas()
+								ValidaCasasRei()
 							}
 							else if (c == (posicao + 8) || c == (posicao + 1) || c == (posicao + 9)) {
-								ValidaCasas()
+								ValidaCasasRei()
 							}
 						}
 
 						//ultima coluna
 						else if (posicao == 8 || posicao == 16 || posicao == 24 || posicao == 32 || posicao == 40 || posicao == 48 || posicao == 56 || posicao == 64) {
 							if (c == (posicao - 8) || c == (posicao - 1) || c == (posicao - 9)) {
-								ValidaCasas()
+								ValidaCasasRei()
 							}
 							else if (c == (posicao + 8) || c == (posicao + 7)) {
-								ValidaCasas()
+								ValidaCasasRei()
 							}
 
 
@@ -448,16 +460,15 @@
 						//geral
 						else {
 							if (c == (posicao - 8) || c == (posicao - 1) || c == (posicao - 9) || c == (posicao - 7)) {
-								ValidaCasas()
+								ValidaCasasRei()
 							}
 							else if (c == (posicao + 8) || c == (posicao + 1) || c == (posicao + 9) || c == (posicao + 7)) {
-								ValidaCasas()
+								ValidaCasasRei()
 							}
 						}
 					}
 
 					//roque
-
 					if (posicao == 5 || posicao == 61) {
 
 						//direita
@@ -481,8 +492,6 @@
 								if (roqueTorrePreto2 && roqueReiPreto && meuTime == 'preto') {
 									document.getElementById(7).innerHTML = `<input type="button"  onclick="fazRoque('7')" class="caminho" />`;
 								}
-
-
 							}
 						}
 
@@ -499,28 +508,70 @@
 								if (roqueTorrePreto1 && roqueReiPreto && meuTime == 'preto') {
 									document.getElementById(3).innerHTML = `<input type="button"  onclick="fazRoque('3')" class="caminho" />`;
 								}
-
-
 							}
 						}
 
 					}
 
 					//desenha casas livres
-					for (c = 64; c > 0; c--) {
-						if (casasLivres.includes(`${c}`)) {
-							document.getElementById(c).innerHTML = `<input type="button"  onclick="${nome}.MovePeca(${c})" class="caminho" />`;
+					DesenhaCasasPossiveis();
+				}
+				else {
+
+					function ValidaCasasReiInimigo() {
+						if (casasInimigas.indexOf(c) >= 0) {
+							casasInimigasNoCaminho.push(`${c}`);
 						}
-						else if (casasInimigasNoCaminho.includes(`${c}`)) {
-							imgCapturada = '';
-							for (const property in PecasJogando) {
-								if (PecasJogando[property].posicao == c) { imgCapturada = PecasJogando[property].tipoPeca }
-							};
-							document.getElementById(c).innerHTML = `<input  type="image" src="links/img/${imgCapturada}.png" onclick="CapturaPeca(${posicao},${c})" class="pecaInimiga" id="${document.getElementById(c).children[0].id}" value="${document.getElementById(c).children[0].value}" />`;
+						else if (casasAmigas.indexOf(c) < 0) {
+							casasLivres.push(`${c}`);
+						}
+
+					}
+
+					for (c = 64; c > 0; c--) {
+
+						//primeira coluna
+						if (posicao == 1 || posicao == 9 || posicao == 17 || posicao == 25 || posicao == 33 || posicao == 41 || posicao == 49 || posicao == 57) {
+
+							if (c == (posicao - 8) || c == (posicao - 7)) {
+								ValidaCasasReiInimigo()
+							}
+							else if (c == (posicao + 8) || c == (posicao + 1) || c == (posicao + 9)) {
+								ValidaCasasReiInimigo()
+							}
+						}
+
+						//ultima coluna
+						else if (posicao == 8 || posicao == 16 || posicao == 24 || posicao == 32 || posicao == 40 || posicao == 48 || posicao == 56 || posicao == 64) {
+							if (c == (posicao - 8) || c == (posicao - 1) || c == (posicao - 9)) {
+								ValidaCasasReiInimigo()
+							}
+							else if (c == (posicao + 8) || c == (posicao + 7)) {
+								ValidaCasasReiInimigo()
+							}
+
+
+						}
+
+						//geral
+						else {
+							if (c == (posicao - 8) || c == (posicao - 1) || c == (posicao - 9) || c == (posicao - 7)) {
+								ValidaCasasReiInimigo()
+							}
+							else if (c == (posicao + 8) || c == (posicao + 1) || c == (posicao + 9) || c == (posicao + 7)) {
+								ValidaCasasReiInimigo()
+							}
+						}
+					}
+
+					for (c = 65; c >= 0; c--) {
+						if (casasLivres.includes(`${c}`) && c != posicao) {
+							caminhoInimigo.push(c);
 						}
 					}
 
 				}
+
 
 			}
 
@@ -529,90 +580,52 @@
 				var corCasa = document.getElementById(posicao).className;
 
 				//diagonal superior direita
-
+				parar = false;
 				for (c = posicao; c > 0; c = c - 7) {
 					if (posicao == 64) { break }
 
 					var corCaminho = document.getElementById(c).className;
-					if (corCaminho == corCasa) {
-						if (casasAmigas.indexOf(c) >= 0) {
-							if (posicao != c) {
-								break;
-							}
-						}
-						else if (casasInimigas.indexOf(c) >= 0) {
-							casasInimigasNoCaminho.push(`${c}`);
-							break;
-						}
-						casasLivres.push(`${c}`);
+					if (corCaminho == corCasa && posicao != c) {
+						ValidaCasasGeral()
+						if (parar) { break }
+
 					}
 				}
 
 				//diagonal superior esquerda
-
+				parar = false;
 				for (c = posicao; c > 0; c = c - 9) {
 					var corCaminho = document.getElementById(c).className;
-					if (corCaminho == corCasa) {
-						if (casasAmigas.indexOf(c) >= 0) {
-							if (posicao != c) {
-								break;
-							}
-						}
-						else if (casasInimigas.indexOf(c) >= 0) {
-							casasInimigasNoCaminho.push(`${c}`);
-							break;
-						}
-						casasLivres.push(`${c}`);
+					if (corCaminho == corCasa && posicao != c) {
+						ValidaCasasGeral()
+						if (parar) { break }
 					}
 				}
 
 				//diagonal inferior direita
-
+				parar = false;
 				for (c = posicao; c < 65; c = c + 9) {
 					var corCaminho = document.getElementById(c).className;
-					if (corCaminho == corCasa) {
-						if (casasAmigas.indexOf(c) >= 0) {
-							if (posicao != c) {
-								break;
-							}
-						}
-						else if (casasInimigas.indexOf(c) >= 0) {
-							casasInimigasNoCaminho.push(`${c}`);
-							break;
-						}
-						casasLivres.push(`${c}`);
+					if (corCaminho == corCasa && posicao != c) {
+						ValidaCasasGeral()
+						if (parar) { break }
 					}
 				}
 
 				//diagonal inferior esquerda
+				parar = false;
 				for (c = posicao; c < 65; c = c + 7) {
 					if (posicao == 1) { break }
 					var corCaminho = document.getElementById(c).className;
-					if (corCaminho == corCasa) {
-						if (casasAmigas.indexOf(c) >= 0) {
-							if (posicao != c) {
-								break;
-							}
-						}
-						else if (casasInimigas.indexOf(c) >= 0) {
-							casasInimigasNoCaminho.push(`${c}`);
-							break;
-						}
-						casasLivres.push(`${c}`);
+					if (corCaminho == corCasa && posicao != c) {
+						ValidaCasasGeral()
+						if (parar) { break }
 					}
 				}
 
 				//desenha casas livres
 				if (vez == meuTime) {
-					for (c = 65; c >= 0; c--) {
-						if (casasLivres.includes(`${c}`) && c != posicao) {
-							document.getElementById(c).innerHTML = `<input type="button"  onclick="${nome}.MovePeca(${c})" class="caminho" />`;
-						}
-						else if (casasInimigasNoCaminho.includes(`${c}`)) {
-							document.getElementById(c).innerHTML = `<input type="button"  onclick="CapturaPeca(${posicao},${c})" class="pecaInimiga" id="${document.getElementById(c).children[0].id}" value="${document.getElementById(c).children[0].value}" />`;
-						}
-					}
-
+					DesenhaCasasPossiveis()
 				}
 
 				else {
@@ -620,7 +633,6 @@
 						if (casasLivres.includes(`${c}`) && c != posicao) {
 							caminhoInimigo.push(c);
 						}
-
 					}
 				}
 			}
@@ -703,14 +715,7 @@
 						}
 					}
 					//desenha casas livres
-					for (c = 64; c > 0; c--) {
-						if (casasLivres.includes(`${c}`)) {
-							document.getElementById(c).innerHTML = `<input type="button"  onclick="${nome}.MovePeca(${c})" class="caminho" />`;
-						}
-						else if (casasInimigasNoCaminho.includes(`${c}`)) {
-							document.getElementById(c).innerHTML = `<input type="button"  onclick="CapturaPeca(${posicao},${c})" class="pecaInimiga" id="${document.getElementById(c).children[0].id}" value="${document.getElementById(c).children[0].value}" />`;
-						}
-					}
+					DesenhaCasasPossiveis()
 
 
 				}
@@ -721,53 +726,18 @@
 
 				if (vez == meuTime) {
 
-					var casasLivres = [];
-					var casasInimigas = [];
-					var casasInimigasNoCaminho = [];
-					var casasAmigas = [];
-
-					for (const property in PecasJogando) {
-						casaInimiga = `${PecasJogando[property].nome}`;
-						casaInimiga = casaInimiga.toLowerCase();
-						if (!casaInimiga.includes(meuTime)) { casasInimigas.push(PecasJogando[property].posicao) }
-						else { casasAmigas.push(PecasJogando[property].posicao) }
-					};
-
-
-
-
 					//reta superior
-
-					for (c = posicao; c > 0; c = c - 8) {
-
-						if (casasAmigas.indexOf(c) >= 0) {
-							if (posicao != c) {
-								break;
-							}
-						}
-						else if (casasInimigas.indexOf(c) >= 0) {
-							casasInimigasNoCaminho.push(`${c}`);
-							break;
-						}
-						casasLivres.push(`${c}`);
-
+					parar = false;
+					for (c = posicao - 8; c > 0; c = c - 8) {
+						ValidaCasasGeral()
+						if (parar) { break }
 					}
 
 					//reta inferior
-
-					for (c = posicao; c < 65; c = c + 8) {
-
-						if (casasAmigas.indexOf(c) >= 0) {
-							if (posicao != c) {
-								break;
-							}
-						}
-						else if (casasInimigas.indexOf(c) >= 0) {
-							casasInimigasNoCaminho.push(`${c}`);
-							break;
-						}
-						casasLivres.push(`${c}`);
-
+					parar = false;
+					for (c = posicao + 8; c < 65; c = c + 8) {
+						ValidaCasasGeral()
+						if (parar) { break }
 					}
 
 					//direita
@@ -782,17 +752,10 @@
 					else if (posicao < 57) { linhaDireita = 7; }
 					else if (posicao < 65) { linhaDireita = 8; };
 
-					for (c = posicao; c <= (8 * linhaDireita); c++) {
-						if (casasAmigas.indexOf(c) >= 0) {
-							if (posicao != c) {
-								break;
-							}
-						}
-						else if (casasInimigas.indexOf(c) >= 0) {
-							casasInimigasNoCaminho.push(`${c}`);
-							break;
-						}
-						casasLivres.push(`${c}`);
+					parar = false;
+					for (c = posicao + 1; c <= (8 * linhaDireita); c++) {
+						ValidaCasasGeral()
+						if (parar) { break }
 					}
 
 					//esquerda
@@ -807,36 +770,22 @@
 					else if (posicao < 57) { linhaEsquerda = 6; }
 					else if (posicao < 65) { linhaEsquerda = 7; };;
 
-					for (c = posicao; (8 * linhaEsquerda) < c; c--) {
+					parar = false;
+					for (c = posicao - 1; (8 * linhaEsquerda) < c; c--) {
 
-						if (casasAmigas.indexOf(c) >= 0) {
-							if (posicao != c) {
-								break;
-							}
-						}
-						else if (casasInimigas.indexOf(c) >= 0) {
-							casasInimigasNoCaminho.push(`${c}`);
-							break;
-						}
-						casasLivres.push(`${c}`);
+						ValidaCasasGeral()
+						if (parar) { break }
 
 					}
-
-
 
 					//desenha casas livres
-					for (c = 64; c > 0; c--) {
-						if (casasLivres.includes(`${c}`) && c != posicao) {
-							document.getElementById(c).innerHTML = `<input type="button"  onclick="${nome}.MovePeca(${c})" class="caminho" />`;
-						}
-						else if (casasInimigasNoCaminho.includes(`${c}`)) {
-							document.getElementById(c).innerHTML = `<input type="button"  onclick="CapturaPeca(${posicao},${c})" class="pecaInimiga" id="${document.getElementById(c).children[0].id}" value="${document.getElementById(c).children[0].value}" />`;
-						}
-					}
+					DesenhaCasasPossiveis()
 
 				}
 
 			};
+
+
 
 			if (nomeBusca.includes("rainha")) {
 
@@ -1040,6 +989,10 @@
 				}
 
 			}
+
+
+
+
 
 		};
 
@@ -1496,7 +1449,26 @@
 		}
 
 
+		function ValidaCaminhosInimigos(time) {
 
+			caminhoInimigo = [];
+
+			for (const property in PecasJogando) {
+
+				if (!PecasJogando[property].nome.toLowerCase().includes(`${time}`)) {
+					CaminhoPeca(PecasJogando[property].nome, PecasJogando[property].posicao)
+					//console.log(PecasJogando[property].nome)
+
+				}
+
+			}
+			meuTime = time;
+		};
+
+		function Xeque() {
+			alert('Xeque!')
+
+		}
 
 
 		class Peca {
@@ -1597,44 +1569,43 @@
 
 
 
-
 		/* 		AREA DE TESTE
+		
+	
+	
+	TESTE VALIDAÇÃO DE MOVIMENTOS
 			
+	const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+	
+	
+	for (const property in PecasJogando) {
+	console.log(PecasJogando[property].nome);
+	console.log(PecasJogando[property]);
+	CaminhoPeca(PecasJogando[property].nome, PecasJogando[property].posicao);
+	await sleep(1000);
+	
+	};
+	console.log('fim');
+		
+	
+	TESTE RECORTE IMAGEN
+		
+	const sprites = new Image();
+	
+	sprites.src = src = "links/img/pecas.png";
+	
+	const canvas = document.querySelector('canvas');
+	const contexto = canvas.getContext('2d');
+	
+	contexto.drawImage(
+		sprites
+	)
 		
 		
-		TESTE VALIDAÇÃO DE MOVIMENTOS
-				
-		const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 		
 		
-		for (const property in PecasJogando) {
-		console.log(PecasJogando[property].nome);
-		console.log(PecasJogando[property]);
-		CaminhoPeca(PecasJogando[property].nome, PecasJogando[property].posicao);
-		await sleep(1000);
 		
-		};
-		console.log('fim');
-			
-		
-		TESTE RECORTE IMAGEN
-			
-		const sprites = new Image();
-		
-		sprites.src = src = "links/img/pecas.png";
-		
-		const canvas = document.querySelector('canvas');
-		const contexto = canvas.getContext('2d');
-		
-		contexto.drawImage(
-			sprites
-		)
-			
-			
-			
-			
-			
-		*/
+	*/
 
 	</script>
 
