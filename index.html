@@ -35,7 +35,7 @@
 
 	</section>
 
-
+	<canvas id="canvas" width="300" height="300"></canvas>
 
 
 
@@ -1503,23 +1503,23 @@
 		
 	
 	TESTE RECORTE IMAGEN
-		
-	const sprites = new Image();
-	
-	sprites.src = src = "links/img/pecas.png";
-	
-	const canvas = document.querySelector('canvas');
-	const contexto = canvas.getContext('2d');
-	
-	contexto.drawImage(
-		sprites
-	)
-		
-		
-		
-		
-		
 	*/
+		const sprites = new Image();
+
+		sprites.src = src = "links/img/pecas.png";
+
+		const canvas = document.querySelector('canvas');
+		const contexto = canvas.getContext('2d');
+		console.log(contexto);
+		contexto.drawImage(
+			sprites
+		)
+
+
+
+
+
+
 
 	</script>
 

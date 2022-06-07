@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>???</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<link rel="stylesheet" href="links/css/Principal.css?01112021132567" type="text/css">
+</head>
+
+<body>
+
+	<header>
+
+
+
+	</header>
+
+
+
+
+
+	<<canvas id="canvas" width="1460" height="1210" style="border: 2px solid purple"></canvas>
+
+
+		<script type="text/javascript">
+			/*
+					const sprites = new Image();
+			
+					sprites.src = src = "links/img/pecas.png";
+			
+					const canvas = document.querySelector('canvas');
+					const contexto = canvas.getContext('2d');
+					console.log(contexto);
+					contexto.drawImage(
+						sprites
+					)*/
+			/*
+						const canvas = document.getElementById('canvas');
+			
+						const ctx = canvas.getContext('2d');
+						ctx.font = '16px sans-serif';
+						ctx.textAlign = 'center';
+			
+						const img = new Image();
+						img.src = "links/img/pecas.png"; //'https://interactive-examples.mdn.mozilla.net/media/examples/star.png';
+						img.onload = function () {
+							const w = img.width,
+								h = img.height;
+			
+							ctx.fillText('Smoothing = TRUE', w * 2.5, 200);
+							ctx.imageSmoothingEnabled = true;
+							ctx.drawImage(img, w, h, w, h); //desenha a imagem (variavel, posição x da imagem, posição y da imagem, escala x da imagem, escala y da imagem  )
+			
+			
+						};
+			
+			*/
+
+			const canvas = document.getElementById('canvas'),
+				ctx = canvas.getContext('2d'),
+				image = new Image();
+
+			// Wait for the sprite sheet to load
+			image.onload = function () {
+				Promise.all([
+					// Cut out two sprites from the sprite sheet
+					createImageBitmap(image, 0, 0, 32, 32),
+					createImageBitmap(image, 32, 0, 32, 32)
+				]).then(function (sprites) {
+					// Draw each sprite onto the canvas
+					ctx.drawImage(sprites[0], 0, 0);
+					ctx.drawImage(sprites[1], 32, 32);
+				});
+			}
+
+			// Load the sprite sheet from an image file
+			image.src = 'sprites.png';
+
+			ctx.drawImage(image, 0, 0, 100, 100); //desenha a imagem (variavel, posição x da imagem, posição y da imagem, escala x da imagem, escala y da imagem  )
+
+
+
+
+			/* 		AREA DE TESTE
+			
+		
+		
+		TESTE VALIDAÇÃO DE MOVIMENTOS
+				
+		const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+		
+		
+		for (const property in PecasJogando) {
+		console.log(PecasJogando[property].nome);
+		console.log(PecasJogando[property]);
+		CaminhoPeca(PecasJogando[property].nome, PecasJogando[property].posicao);
+		await sleep(1000);
+		
+		};
+		console.log('fim');
+			
+		
+		TESTE RECORTE IMAGEN
+		*/
+
+
+
+
+
+
+
+		</script>
+
+
+</body>
+
+
+</html>
