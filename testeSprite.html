@@ -20,152 +20,175 @@
 
 
 
-	<<canvas id="canvas" width="1000" height="340" style="border: 2px solid purple"></canvas>
+	<canvas onclick="alert('cav')" id="50" width="65" height="85"></canvas>
+
+	<canvas onclick="alert('cav')" id="60" width="65" height="85"></canvas>
+
+	<canvas onclick="alert('cav')" id="70" width="65" height="85"></canvas>
 
 
-		<script type="text/javascript">
-			/* primeiro teste
-					const sprites = new Image();
-			
-					sprites.src = src = "links/img/pecas.png";
-			
-					const canvas = document.querySelector('canvas');
-					const contexto = canvas.getContext('2d');
-					console.log(contexto);
-					contexto.drawImage(
-						sprites
-					)*/
+	<div>
+
+
+	</div>
+
+
+	<script type="text/javascript">
+		/* primeiro teste
+				const sprites = new Image();
+		
+				sprites.src = src = "links/img/pecas.png";
+		
+				const canvas = document.querySelector('canvas');
+				const contexto = canvas.getContext('2d');
+				console.log(contexto);
+				contexto.drawImage(
+					sprites
+				)*/
 
 
 
-			// segundo teste
-			const canvas = document.getElementById('canvas');
+		// segundo teste
+		desenhaPeca(50, 1199, 24, 85, 100);
+
+		desenhaPeca(60, 1006, 27, 78, 97);
+
+		desenhaPeca(70, 816, 180, 65, 100);
+
+
+
+		function desenhaPeca(id, inicioX, incioY, largura, altura) {
+
+
+			const canvas = document.getElementById(id);
 
 			const ctx = canvas.getContext('2d');
-			ctx.font = '16px sans-serif';
-			ctx.textAlign = 'center';
 
 			const img = new Image();
-			img.src = "links/img/pecas.png"; //'https://interactive-examples.mdn.mozilla.net/media/examples/star.png';
+			img.src = "links/img/novasPecas.png"; //'https://interactive-examples.mdn.mozilla.net/media/examples/star.png';
 			img.onload = function () {
-				const
-					w = img.width,
-					h = img.height;
 
-				sx = 0 //(eixo x da imagem de origem) - Este parâmetro diz de onde você deseja recortar ou começar a recortar a imagem a partir do eixo x.
-				sy = 0//eixo y da imagem de origem) - Este parâmetro diz de onde você deseja recortar ou começar a recortar a imagem a partir do eixo y.
-				sWidth = 65//- A largura da imagem a partir de sx.
-				sHeight = 85//- A altura da imagem a partir de sy.
-				dx = 10 //- O ponto a partir do qual começar a desenhar a imagem na tela a partir do eixo x.
-				dy = 10// - O ponto a partir do qual começar a desenhar a imagem na tela a partir do eixo y.
+				sx = inicioX  //(eixo x da imagem de origem) - Este parâmetro diz de onde você deseja recortar ou começar a recortar a imagem a partir do eixo x.
+				sy = incioY//eixo y da imagem de origem) - Este parâmetro diz de onde você deseja recortar ou começar a recortar a imagem a partir do eixo y.
+				sWidth = largura//- A largura da imagem a partir de sx.
+				sHeight = altura//- A altura da imagem a partir de sy.
+				//dx = 10 //- O ponto a partir do qual começar a desenhar a imagem na tela a partir do eixo x.
+				//dy = 10// - O ponto a partir do qual começar a desenhar a imagem na tela a partir do eixo y.
 				dWidth = 65//- Comprimento das imagens que devem ser apresentadas no ecrã.
 				dHeight = 85//- A altura das imagens que devem ser apresentadas no ecrã.
 
-				ctx.fillText('Smoothing = TRUE', w * 2.5, 200);
-				ctx.imageSmoothingEnabled = true;
-				ctx.drawImage(img, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+				//ctx.fillText('Smoothing = TRUE', w * 2.5, 200);
+				//ctx.imageSmoothingEnabled = true;
+				ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, dWidth, dHeight);
 				//ctx.drawImage(img, w, h, w, h); //desenha a imagem (variavel, posição x da imagem, posição y da imagem, escala x da imagem, escala y da imagem  )
 
 
 			};
+
+		}
+
+		//`<img src="${img}" onclick="alert('this.nome')" class="peca" value="tipoPeca" />`;
+
+		//document.getElementById('teste').innerHTML = `<div id="teste" onclick="alert('this.nome')" class="peca" value="tipoPeca" >`;
+		;
 
 
 
 
 			// terceiro teste
 
-			/*
-						const canvas = document.getElementById('canvas'),
-							ctx = canvas.getContext('2d'),
-							image = new Image();
-			
-						// Wait for the sprite sheet to load
-						image.onload = function () {
-							Promise.all([
-								// Cut out two sprites from the sprite sheet
-								createImageBitmap(image, 0, 0, 32, 32),
-								createImageBitmap(image, 32, 0, 32, 32)
-							]).then(function (sprites) {
-								// Draw each sprite onto the canvas
-								ctx.drawImage(sprites[0], 0, 0);
-								ctx.drawImage(sprites[1], 32, 32);
-							});
-						}
-			
-						// Load the sprite sheet from an image file
-						image.src = 'sprites.png';
-			
-						ctx.drawImage(image, 0, 0, 100, 100); //desenha a imagem (variavel, posição x da imagem, posição y da imagem, escala x da imagem, escala y da imagem  )
-			*/
+		/*
+					const canvas = document.getElementById('canvas'),
+						ctx = canvas.getContext('2d'),
+						image = new Image();
+		
+					// Wait for the sprite sheet to load
+					image.onload = function () {
+						Promise.all([
+							// Cut out two sprites from the sprite sheet
+							createImageBitmap(image, 0, 0, 32, 32),
+							createImageBitmap(image, 32, 0, 32, 32)
+						]).then(function (sprites) {
+							// Draw each sprite onto the canvas
+							ctx.drawImage(sprites[0], 0, 0);
+							ctx.drawImage(sprites[1], 32, 32);
+						});
+					}
+		
+					// Load the sprite sheet from an image file
+					image.src = 'sprites.png';
+		
+					ctx.drawImage(image, 0, 0, 100, 100); //desenha a imagem (variavel, posição x da imagem, posição y da imagem, escala x da imagem, escala y da imagem  )
+		*/
 
 
-			/*quarto teste
-			
-						window.addEventListener('keydown', KeyDown);
-						Iniciar();
-			
-			
-						var canvas;//o elemento canvas sobre o qual desenharemos
-						var ctx;//o "contexto" da canvas que será utilizado (2D ou 3D)
-						var dx = 50;//a taxa de variação (velocidade) horizontal do objeto
-						var x = 30;//posição horizontal do objeto (com valor inicial)
-						var y = 0;//posição vertical do objeto (com valor inicial)
-						var WIDTH = 1000;//largura da área retangular
-						var HEIGHT = 340;//altura da área retangular
-						var tile1 = new Image();//Imagem que será carregada e desenhada na canvas
-						tile1.src = src = "teste.png";
-						var posicao = 0;//Indicador da posição atual do personagem
-						var NUM_POSICOES = 6;//Quantidade de imagens que compõem o movimento
-			
-			
-			
-						function KeyDown(evt) {
-							switch (evt.keyCode) {
-								case 39:  //seta para direita
-									if (x + dx < WIDTH) {
-										x += dx;
-										posicao++;
-										if (posicao == NUM_POSICOES)
-											posicao = 1;
-									}
-									break;
-							}
+		/*quarto teste
+		
+					window.addEventListener('keydown', KeyDown);
+					Iniciar();
+		
+		
+					var canvas;//o elemento canvas sobre o qual desenharemos
+					var ctx;//o "contexto" da canvas que será utilizado (2D ou 3D)
+					var dx = 50;//a taxa de variação (velocidade) horizontal do objeto
+					var x = 30;//posição horizontal do objeto (com valor inicial)
+					var y = 0;//posição vertical do objeto (com valor inicial)
+					var WIDTH = 1000;//largura da área retangular
+					var HEIGHT = 340;//altura da área retangular
+					var tile1 = new Image();//Imagem que será carregada e desenhada na canvas
+					tile1.src = src = "teste.png";
+					var posicao = 0;//Indicador da posição atual do personagem
+					var NUM_POSICOES = 6;//Quantidade de imagens que compõem o movimento
+		
+		
+		
+					function KeyDown(evt) {
+						switch (evt.keyCode) {
+							case 39:  //seta para direita
+								if (x + dx < WIDTH) {
+									x += dx;
+									posicao++;
+									if (posicao == NUM_POSICOES)
+										posicao = 1;
+								}
+								break;
 						}
-			
-			
-						function Desenhar() {
-							tile1.src = posicao + ".png";
-							ctx.drawImage(tile1, x, y);
-						}
-			
-			
-						function LimparTela() {
-							ctx.fillStyle = "rgb(233,233,233)";
-							ctx.beginPath();
-							ctx.rect(0, 0, WIDTH, HEIGHT);
-							ctx.closePath();
-							ctx.fill();
-						}
-			
-			
-						function Atualizar() {
-							LimparTela();
-							Desenhar();
-						}
-			
-			
-						function Iniciar() {
-							canvas = document.getElementById("canvas");
-							ctx = canvas.getContext("2d");
-							return setInterval(Atualizar, 100);
-						}
-			*/
+					}
+		
+		
+					function Desenhar() {
+						tile1.src = posicao + ".png";
+						ctx.drawImage(tile1, x, y);
+					}
+		
+		
+					function LimparTela() {
+						ctx.fillStyle = "rgb(233,233,233)";
+						ctx.beginPath();
+						ctx.rect(0, 0, WIDTH, HEIGHT);
+						ctx.closePath();
+						ctx.fill();
+					}
+		
+		
+					function Atualizar() {
+						LimparTela();
+						Desenhar();
+					}
+		
+		
+					function Iniciar() {
+						canvas = document.getElementById("canvas");
+						ctx = canvas.getContext("2d");
+						return setInterval(Atualizar, 100);
+					}
+		*/
 
 
 
-			/* 		AREA DE TESTE
-			
-		drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+		/* 		AREA DE TESTE
+		
+	drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
 Parâmetros:
 
 image - A própria imagem que queremos cortar e exibir no navegador.
@@ -180,24 +203,24 @@ dHeight - A altura das imagens que devem ser apresentadas no ecrã.
 
 
 
-		
-		TESTE VALIDAÇÃO DE MOVIMENTOS
-				
-		const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
-		
-		
-		for (const property in PecasJogando) {
-		console.log(PecasJogando[property].nome);
-		console.log(PecasJogando[property]);
-		CaminhoPeca(PecasJogando[property].nome, PecasJogando[property].posicao);
-		await sleep(1000);
-		
-		};
-		console.log('fim');
+	
+	TESTE VALIDAÇÃO DE MOVIMENTOS
 			
+	const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+	
+	
+	for (const property in PecasJogando) {
+	console.log(PecasJogando[property].nome);
+	console.log(PecasJogando[property]);
+	CaminhoPeca(PecasJogando[property].nome, PecasJogando[property].posicao);
+	await sleep(1000);
+	
+	};
+	console.log('fim');
 		
-		TESTE RECORTE IMAGEN
-		*/
+	
+	TESTE RECORTE IMAGEN
+	*/
 
 
 
@@ -205,7 +228,7 @@ dHeight - A altura das imagens que devem ser apresentadas no ecrã.
 
 
 
-		</script>
+	</script>
 
 
 </body>
